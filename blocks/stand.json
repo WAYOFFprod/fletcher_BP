@@ -1,0 +1,94 @@
+{
+    "format_version": "1.16.0",
+    "minecraft:block": {
+        "description": {
+            "identifier": "wayoff:stand",
+            "properties": {
+                "wayoff:block_rotation": [
+                    0,
+                    1,
+                    2,
+                    3
+                ]
+            }
+            
+        },
+        "components": {
+            "minecraft:destroy_time": 3,
+            "minecraft:explosion_resistance": 3,
+            "minecraft:friction": 0.9,
+            "minecraft:flammable": {
+                "flame_odds": 0,
+                "burn_odds": 0
+            },
+            "minecraft:map_color": "#818181",
+            "minecraft:block_light_absorption": 0,
+            "minecraft:block_light_emission": 0,
+            "minecraft:geometry": "geometry.stand",
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "stand",
+                    "render_method": "opaque",
+                    "face_dimming": true,
+                    "ambient_occlusion": true
+                }
+            },
+            "minecraft:creative_category": {
+				"category": "construction",
+				"group": "itemGroup.name.wood"
+			},
+            "minecraft:on_player_placing": {
+                "event": "wayoff:update_rotation"
+            }            
+        },
+        "events": {
+            "wayoff:update_rotation": {
+                "set_block_property": {
+                    "wayoff:block_rotation": "query.cardinal_facing_2d - 2"
+                }
+            }
+        },
+        "permutations": [
+            {
+                "condition": "query.block_property('wayoff:block_rotation') == 0",
+                "components": {
+                    "minecraft:rotation": [
+                        0,
+                        180,
+                        0
+                    ]
+                }
+            },
+            {
+                "condition": "query.block_property('wayoff:block_rotation') == 1",
+                "components": {
+                    "minecraft:rotation": [
+                        0,
+                        0,
+                        0
+                    ]
+                }
+            },
+            {
+                "condition": "query.block_property('wayoff:block_rotation') == 2",
+                "components": {
+                    "minecraft:rotation": [
+                        0,
+                        270,
+                        0
+                    ]
+                }
+            },
+            {
+                "condition": "query.block_property('wayoff:block_rotation') == 3",
+                "components": {
+                    "minecraft:rotation": [
+                        0,
+                        90,
+                        0
+                    ]
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "This is a pack that spawns a lone NPC with custom buildings, blocks and quest giving NPC",
+        "name": "WAYOFF - Lone Fletcher",
+      "uuid":"a340e791-2819-423a-8a28-6aac60b07031",
+      "version": [0, 0, 1],
+      "min_engine_version": [ 1, 14, 0 ]
+    },
+    "modules":
+      [
+        {
+          "description": "My First Add-On!",
+            "type": "data",
+            "uuid": "78031486-dcb9-4efb-9c12-026a40c4ec51",
+            "version":  [0, 0, 1]
+        }
+      ],
+    "dependencies": [
+      {
+       "uuid":"28564e89-d1aa-476d-88e6-d48f235aa295",
+        "version":[0,0,1]
+      }
+   ]
+  }
