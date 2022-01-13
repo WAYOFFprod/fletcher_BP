@@ -1,94 +1,142 @@
 {
-    "format_version": "1.16.0",
-    "minecraft:block": {
-        "description": {
-            "identifier": "wayoff:stand",
-            "properties": {
-                "wayoff:block_rotation": [
-                    0,
-                    1,
-                    2,
-                    3
-                ]
-            }
-            
-        },
-        "components": {
-            "minecraft:destroy_time": 3,
-            "minecraft:explosion_resistance": 3,
-            "minecraft:friction": 0.9,
-            "minecraft:flammable": {
-                "flame_odds": 0,
-                "burn_odds": 0
-            },
-            "minecraft:map_color": "#818181",
-            "minecraft:block_light_absorption": 0,
-            "minecraft:block_light_emission": 0,
-            "minecraft:geometry": "geometry.stand",
-            "minecraft:material_instances": {
-                "*": {
-                    "texture": "stand",
-                    "render_method": "opaque",
-                    "face_dimming": true,
-                    "ambient_occlusion": true
-                }
-            },
-            "minecraft:creative_category": {
-				"category": "construction",
-				"group": "itemGroup.name.wood"
-			},
-            "minecraft:on_player_placing": {
-                "event": "wayoff:update_rotation"
-            }            
-        },
-        "events": {
-            "wayoff:update_rotation": {
-                "set_block_property": {
-                    "wayoff:block_rotation": "query.cardinal_facing_2d - 2"
-                }
-            }
-        },
-        "permutations": [
-            {
-                "condition": "query.block_property('wayoff:block_rotation') == 0",
-                "components": {
-                    "minecraft:rotation": [
-                        0,
-                        180,
-                        0
-                    ]
-                }
-            },
-            {
-                "condition": "query.block_property('wayoff:block_rotation') == 1",
-                "components": {
-                    "minecraft:rotation": [
-                        0,
-                        0,
-                        0
-                    ]
-                }
-            },
-            {
-                "condition": "query.block_property('wayoff:block_rotation') == 2",
-                "components": {
-                    "minecraft:rotation": [
-                        0,
-                        270,
-                        0
-                    ]
-                }
-            },
-            {
-                "condition": "query.block_property('wayoff:block_rotation') == 3",
-                "components": {
-                    "minecraft:rotation": [
-                        0,
-                        90,
-                        0
-                    ]
-                }
-            }
+  "format_version": "1.16.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "wayoff:stand",
+      "properties": {
+        "wayoff:facing": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "wayoff:is_corner": [
+          false, true
         ]
-    }
+      }
+    },
+    "components": {
+      "minecraft:destroy_time": 3,
+      "minecraft:explosion_resistance": 3,
+      "minecraft:friction": 0.9,
+      "minecraft:flammable": {
+        "flame_odds": 0,
+        "burn_odds": 0
+      },
+      "minecraft:map_color": "#818181",
+      "minecraft:block_light_absorption": 0,
+      "minecraft:block_light_emission": 0,
+      "minecraft:geometry": "geometry.stand",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "stand",
+          "render_method": "opaque",
+          "face_dimming": true,
+          "ambient_occlusion": true
+        }
+      },
+      "minecraft:creative_category": {
+        "category": "construction",
+        "group": "itemGroup.name.wood"
+      },
+      "minecraft:on_player_placing": {
+        "event": "wayoff:check_relation"
+      },
+      "minecraft:on_placed": {
+        "event": "wayoff:check_neighbor"
+      }
+    },
+    "events": {
+      "wayoff:check_relation": {
+        "set_block_property": {
+          "wayoff:facing": "query.cardinal_facing_2d - 2"
+        }
+      },
+      "wayoff:check_neighbor": {
+        "set_block_property": {
+          "wayoff:is_corner": "t.x = 0;
+            t.z = 0;
+            t.or_1 = 'null';
+            t.or_2 = 'null';
+            (query.block_property('wayoff:facing') == 0) ? {
+              t.x = 0;
+              t.z = -1;
+              t.or_1 = 'wayoff:orientation_east';
+              t.or_2 = 'wayoff:orientation_west';
+            };
+            (query.block_property('wayoff:facing') == 1) ? {
+              t.x = 0;
+              t.z = 1;
+              t.or_1 = 'wayoff:orientation_east';
+              t.or_2 = 'wayoff:orientation_west';
+            };
+            (query.block_property('wayoff:facing') == 2) ? {
+              t.x = -1;
+              t.z = 0;
+              t.or_1 = 'wayoff:orientation_north';
+              t.or_2 = 'wayoff:orientation_south';
+            };
+            (query.block_property('wayoff:facing') == 3) ? {
+              t.x = 1;
+              t.z = 0;
+              t.or_1 = 'wayoff:orientation_north';
+              t.or_2 = 'wayoff:orientation_south';
+            };
+            return query.block_neighbor_has_any_tag(t.x, 0, t.z, t.or_1, t.or_2);"
+        }
+      }
+    },
+    "permutations": [
+      {
+        "condition": "query.block_property('wayoff:is_corner') == true",
+        "components": {
+          "minecraft:geometry": "geometry.stand_corner"
+        }
+      },
+      {
+        "condition": "query.block_property('wayoff:facing') == 0",
+        "components": {
+          "minecraft:rotation": [
+            0,
+            180,
+            0
+          ],
+          "tag:wayoff:orientation_north": {}
+        }
+      },
+      {
+        "condition": "query.block_property('wayoff:facing') == 1",
+        "components": {
+          "minecraft:rotation": [
+            0,
+            0,
+            0
+          ],
+          "tag:wayoff:orientation_south": {}
+        }
+      },
+      {
+        "condition": "query.block_property('wayoff:facing') == 2",
+        "components": {
+          "minecraft:rotation": [
+            0,
+            270,
+            0
+          ],
+          "tag:wayoff:orientation_west": {}
+        }
+      },
+      {
+        "condition": "query.block_property('wayoff:facing') == 3",
+        "components": {
+          "minecraft:rotation": [
+            0,
+            90,
+            0
+          ],
+          "tag:wayoff:orientation_east": {}
+        }
+      }
+    ]
+  }
 }

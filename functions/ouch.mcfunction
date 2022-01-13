@@ -1,0 +1,3 @@
+say Bye...
+teleport @s ~10 ~10 ~10 true
+say OUCH!
