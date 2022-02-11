@@ -93,7 +93,11 @@
           t.up_y = 1;
           t.facing = query.block_property('wayoff:facing');
           (query.block_property('wayoff:facing') == 0) ? {
-            (!query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:corner')) ? {
+            (query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:corner')) ? {
+              (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_north', 'wayoff:top')) ? {
+                return 1;
+              };
+            } : {
               (query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:upward_north')) ? {
                 return 1;
               };
@@ -131,17 +135,28 @@
                 };
               };
             };
-            (query.block_neighbor_has_any_tag(t.north_x, 1, t.north_z, 'wayoff:upward_north') && !query.block_neighbor_has_all_tags(t.north_x, 1, t.north_z, 'wayoff:top')) ? {
-              return 1;
-            };
-            (query.block_neighbor_has_any_tag(t.north_x, 1, t.north_z, 'wayoff:upward_north') && !query.block_neighbor_has_all_tags(t.north_x, 1, t.north_z, 'wayoff:top')) ? {
-              return 1;
+            (!query.block_neighbor_has_all_tags(t.north_x, 1, t.north_z,  'wayoff:top')) ? {
+              (query.block_neighbor_has_any_tag(t.north_x, 1, t.north_z, 'wayoff:upward_north')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.north_x, 1, t.north_z, 'wayoff:upward_east', 'wayoff:corner_ccw')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.north_x, 1, t.north_z, 'wayoff:upward_west', 'wayoff:corner_cw')) ? {
+                return 1;
+              };
             };
             return 0;
           };
           (query.block_property('wayoff:facing') == 1) ? {
-            (query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:upward_south') && !query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:corner')) ? {
-              return 1;
+            (query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:corner')) ? {
+              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_south', 'wayoff:top')) ? {
+                return 1;
+              };
+            } : {
+              (query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:upward_south')) ? {
+                return 1;
+              };
             };
             (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:inside_corner')) ? {
               (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_east', 'wayoff:corner_inside_cw')) ? {
@@ -151,10 +166,10 @@
                 return 1;
               };
             } : {
-              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_east') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_east') && query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:top')) ? {
                 return 1;
               };
-              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_west') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_west') && query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:top')) ? {
                 return 1;
               };
             };
@@ -176,18 +191,29 @@
                 };
               };
             };
-            (query.block_neighbor_has_any_tag(t.south_x, 1, t.south_z, 'wayoff:upward_south') && !query.block_neighbor_has_all_tags(t.south_x, 1, t.south_z, 'wayoff:top')) ? {
-              return 1;
-            };
-            (query.block_neighbor_has_any_tag(t.south_x, 1, t.south_z, 'wayoff:upward_south') && !query.block_neighbor_has_all_tags(t.south_x, 1, t.south_z, 'wayoff:top')) ? {
-              return 1;
+            (!query.block_neighbor_has_all_tags(t.south_x, 1, t.south_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_any_tag(t.south_x, 1, t.south_z, 'wayoff:upward_south')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_west', 'wayoff:corner_ccw')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_east', 'wayoff:corner_cw')) ? {
+                return 1;
+              };
             };
             
             return 0;
           };
           (query.block_property('wayoff:facing') == 2) ? {
-            (query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:upward_west') && !query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:corner')) ? {
-              return 1;
+            (query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:corner')) ? {
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_west', 'wayoff:top')) ? {
+                return 1;
+              };
+            } : {
+              (query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:upward_west')) ? {
+                return 1;
+              };
             };
             (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:inside_corner')) ? {
               (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_north', 'wayoff:corner_inside_cw')) ? {
@@ -197,10 +223,10 @@
                 return 1;
               };
             } : {
-              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_north') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_north') && query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:top')) ? {
                 return 1;
               };
-              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_south') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_south') && query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:top')) ? {
                 return 1;
               };
             };
@@ -222,17 +248,29 @@
                 };
               };
             };
-            (query.block_neighbor_has_any_tag(t.west_x, 1, t.west_z, 'wayoff:upward_west') && !query.block_neighbor_has_all_tags(t.west_x, 1, t.west_z, 'wayoff:top')) ? {
-              return 1;
+            (!query.block_neighbor_has_all_tags(t.west_x, 1, t.west_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_any_tag(t.west_x, 1, t.west_z, 'wayoff:upward_west')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_north', 'wayoff:corner_cw')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_south', 'wayoff:corner_ccw')) ? {
+                return 1;
+              };
             };
-            (query.block_neighbor_has_any_tag(t.west_x, 1, t.west_z, 'wayoff:upward_west') && !query.block_neighbor_has_all_tags(t.west_x, 1, t.west_z, 'wayoff:top')) ? {
-              return 1;
-            };
+
             return 0;
           };
           (query.block_property('wayoff:facing') == 3) ? {
-            (query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:upward_east') && !query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:corner')) ? {
-              return 1;
+            (query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:corner')) ? {
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_east', 'wayoff:top')) ? {
+                return 1;
+              };
+            } : {
+              (query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:upward_east')) ? {
+                return 1;
+              };
             };
             (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:inside_corner')) ? {
               (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_south', 'wayoff:corner_inside_cw')) ? {
@@ -242,10 +280,10 @@
                 return 1;
               };
             } : {
-              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_south') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_south') && query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:top')) ? {
                 return 1;
               };
-              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_north') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_north') && query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:top')) ? {
                 return 1;
               };
             };
@@ -267,11 +305,16 @@
                 };
               };
             };
-            (query.block_neighbor_has_any_tag(t.east_x, 1, t.east_z, 'wayoff:upward_east') && !query.block_neighbor_has_all_tags(t.east_x, 1, t.east_z, 'wayoff:top')) ? {
-              return 1;
-            };
-            (query.block_neighbor_has_any_tag(t.east_x, 1, t.east_z, 'wayoff:upward_east') && !query.block_neighbor_has_all_tags(t.east_x, 1, t.east_z, 'wayoff:top')) ? {
-              return 1;
+            (!query.block_neighbor_has_all_tags(t.east_x, 1, t.east_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_any_tag(t.east_x, 1, t.east_z, 'wayoff:upward_east')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_south', 'wayoff:corner_ccw')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_north', 'wayoff:corner_cw')) ? {
+                return 1;
+              };
             };
             return 0;
           };
