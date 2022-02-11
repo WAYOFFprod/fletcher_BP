@@ -1,0 +1,624 @@
+{
+  "format_version": "1.16.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "wayoff:thatched_roof",
+      "properties": {
+        "wayoff:facing": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "wayoff:corner_type": [
+          0, // not a corner
+          1, // corner
+          2, // corner flipped
+          3, // inside corner 
+          4  // inside corner flipped
+        ],
+        "wayoff:block_position": [
+          0, // bottom
+          1  // top
+        ],
+        "wayoff:forward_x": [
+          -1,
+          0, 
+          1 
+        ],
+        "wayoff:forward_z": [
+          -1,
+          0, 
+          1 
+        ]
+      }
+    },
+    "components": {
+      "minecraft:destroy_time": 3,
+      "minecraft:explosion_resistance": 3,
+      "minecraft:friction": 0.9,
+      "minecraft:flammable": {
+        "flame_odds": 0,
+        "burn_odds": 0
+      },
+      "minecraft:map_color": "#a7973c",
+      "minecraft:block_light_absorption": 0,
+      "minecraft:block_light_emission": 0,
+      "minecraft:geometry": "geometry.thatched_roof_bottom",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "thatched_roof",
+          "render_method": "opaque",
+          "face_dimming": true,
+          "ambient_occlusion": true
+        }
+      },
+      "minecraft:creative_category": {
+        "category": "construction",
+        "group": "itemGroup.name.wood"
+      },
+      "minecraft:on_player_placing": {
+        "event": "wayoff:check_relation"
+      },
+      "minecraft:on_placed": {
+        "event": "wayoff:check_neighbor"
+      },
+      "minecraft:aim_collision": {
+        "origin": [-8.0, 0, -8.0],
+        "size": [16.0, 8.0, 16.0]
+      },
+      "minecraft:block_collision": {
+        "origin": [-8.0, 0, -8.0],
+        "size": [16.0, 8.0, 16.0]
+      }
+    },
+    "events": {
+      "wayoff:check_relation": {
+        "set_block_property": {
+          "wayoff:facing": "query.cardinal_facing_2d - 2"
+        }
+      },
+      "wayoff:check_neighbor": {
+        "set_block_property": {
+          "wayoff:block_position": "
+          t.north_x = 0;
+          t.north_z = -1;
+          t.south_x = 0;
+          t.south_z = 1;
+          t.east_x = 1; 
+          t.east_z = 0;
+          t.west_x = -1; 
+          t.west_z = 0;
+          t.bottom_y = -1;
+          t.up_y = 1;
+          t.facing = query.block_property('wayoff:facing');
+          (query.block_property('wayoff:facing') == 0) ? {
+            (!query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:corner')) ? {
+              (query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:upward_north')) ? {
+                return 1;
+              };
+            };
+            (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:inside_corner')) ? {
+              (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_west', 'wayoff:corner_inside_cw')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_east', 'wayoff:corner_inside_ccw')) ? {
+                return 1;
+              };
+            } : {
+              (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_west') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_east') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+                return 1;
+              };
+            };
+
+            (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z,  'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_south')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:corner')) ? {
+                (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_east', 'wayoff:corner_cw')) ? {
+                  return 1;
+                };
+                (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_west', 'wayoff:corner_ccw')) ? {
+                  return 1;
+                };
+              } : {
+                (query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:upward_east', 'wayoff:upward_west')) ? {
+                  return 1;
+                };
+              };
+            };
+            (query.block_neighbor_has_any_tag(t.north_x, 1, t.north_z, 'wayoff:upward_north') && !query.block_neighbor_has_all_tags(t.north_x, 1, t.north_z, 'wayoff:top')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_any_tag(t.north_x, 1, t.north_z, 'wayoff:upward_north') && !query.block_neighbor_has_all_tags(t.north_x, 1, t.north_z, 'wayoff:top')) ? {
+              return 1;
+            };
+            return 0;
+          };
+          (query.block_property('wayoff:facing') == 1) ? {
+            (query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:upward_south') && !query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:corner')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:inside_corner')) ? {
+              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_east', 'wayoff:corner_inside_cw')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_west', 'wayoff:corner_inside_ccw')) ? {
+                return 1;
+              };
+            } : {
+              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_east') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_west') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+                return 1;
+              };
+            };
+            
+            (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_north')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z,  'wayoff:corner')) ? {
+                (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_west', 'wayoff:corner_cw')) ? {
+                  return 1;
+                };
+                (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_east', 'wayoff:corner_ccw')) ? {
+                  return 1;
+                };
+              } : {
+                (query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:upward_east', 'wayoff:upward_west')) ? {
+                  return 1;
+                };
+              };
+            };
+            (query.block_neighbor_has_any_tag(t.south_x, 1, t.south_z, 'wayoff:upward_south') && !query.block_neighbor_has_all_tags(t.south_x, 1, t.south_z, 'wayoff:top')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_any_tag(t.south_x, 1, t.south_z, 'wayoff:upward_south') && !query.block_neighbor_has_all_tags(t.south_x, 1, t.south_z, 'wayoff:top')) ? {
+              return 1;
+            };
+            
+            return 0;
+          };
+          (query.block_property('wayoff:facing') == 2) ? {
+            (query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:upward_west') && !query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:corner')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:inside_corner')) ? {
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_north', 'wayoff:corner_inside_cw')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_south', 'wayoff:corner_inside_ccw')) ? {
+                return 1;
+              };
+            } : {
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_north') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_south') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+                return 1;
+              };
+            };
+
+            (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_east')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z,  'wayoff:corner')) ? {
+                (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_north', 'wayoff:corner_ccw')) ? {
+                  return 1;
+                };
+                (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_south', 'wayoff:corner_cw')) ? {
+                  return 1;
+                };
+              } : {
+                (query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:upward_south', 'wayoff:upward_north')) ? {
+                  return 1;
+                };
+              };
+            };
+            (query.block_neighbor_has_any_tag(t.west_x, 1, t.west_z, 'wayoff:upward_west') && !query.block_neighbor_has_all_tags(t.west_x, 1, t.west_z, 'wayoff:top')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_any_tag(t.west_x, 1, t.west_z, 'wayoff:upward_west') && !query.block_neighbor_has_all_tags(t.west_x, 1, t.west_z, 'wayoff:top')) ? {
+              return 1;
+            };
+            return 0;
+          };
+          (query.block_property('wayoff:facing') == 3) ? {
+            (query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:upward_east') && !query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:corner')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:inside_corner')) ? {
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_south', 'wayoff:corner_inside_cw')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_north', 'wayoff:corner_inside_ccw')) ? {
+                return 1;
+              };
+            } : {
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_south') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_north') && query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:top')) ? {
+                return 1;
+              };
+            };
+
+            (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:top')) ? {
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_west')) ? {
+                return 1;
+              };
+              (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:corner')) ? {
+                (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_south', 'wayoff:corner_cw')) ? {
+                  return 1;
+                };
+                (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_north', 'wayoff:corner_ccw')) ? {
+                  return 1;
+                };
+              } : {
+                (query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:upward_north', 'wayoff:upward_south')) ? {
+                  return 1;
+                };
+              };
+            };
+            (query.block_neighbor_has_any_tag(t.east_x, 1, t.east_z, 'wayoff:upward_east') && !query.block_neighbor_has_all_tags(t.east_x, 1, t.east_z, 'wayoff:top')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_any_tag(t.east_x, 1, t.east_z, 'wayoff:upward_east') && !query.block_neighbor_has_all_tags(t.east_x, 1, t.east_z, 'wayoff:top')) ? {
+              return 1;
+            };
+            return 0;
+          };
+          return 0;",
+          "wayoff:corner_type": "
+          t.north_x = 0;
+          t.north_z = -1;
+          t.south_x = 0;
+          t.south_z = 1;
+          t.east_x = 1; 
+          t.east_z = 0;
+          t.west_x = -1; 
+          t.west_z = 0;
+          t.bottom_y = -1;
+          t.up_y = 1;
+          t.facing = query.block_property('wayoff:facing');
+          (t.facing == 0) ? {
+            t.res = 0;
+            (query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:upward_east') && !query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:corner_ccw')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_south', 'wayoff:corner_ccw') || query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_north', 'wayoff:corner_inside_cw')) ? {
+              return 1;
+            };
+
+            (query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:upward_west') && !query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:corner_cw')) ? {
+              return 2;
+            };
+            (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_south', 'wayoff:corner_cw') || query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_north', 'wayoff:corner_inside_ccw')) ? {
+              return 2;
+            };
+
+            ((query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_west') && !query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:corner_inside_cw', 'wayoff:corner_ccw'))) ? {
+              return 3;
+            };
+            (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_south', 'wayoff:corner_inside_cw')) ? {
+              return 3;
+            };
+            (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_north', 'wayoff:corner_ccw')) ? {
+              return 3;
+            };
+
+            ((query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_east') && !query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:corner_inside_ccw', 'wayoff:corner_cw'))) ? {
+              return 4;
+            };
+            (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_south', 'wayoff:corner_inside_ccw')) ? {
+              return 4;
+            };
+            (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_north', 'wayoff:corner_cw')) ? {
+              return 4;
+            };
+            return t.res;
+          };
+          (t.facing == 1) ? {
+            t.res = 0;
+            (query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:upward_west') && !query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:corner_ccw')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_north', 'wayoff:corner_ccw') || query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_south', 'wayoff:corner_inside_cw')) ? {
+              return 1;
+            };
+
+            (query.block_neighbor_has_any_tag(t.south_x, 0, t.south_z, 'wayoff:upward_east') && !query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:corner_cw')) ? {
+              return 2;
+            };
+            (query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_north', 'wayoff:corner_cw') || query.block_neighbor_has_all_tags(t.south_x, 0, t.south_z, 'wayoff:upward_south', 'wayoff:corner_inside_ccw')) ? {
+              return 2;
+            };
+
+            ((query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_east') && !query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:corner_inside_cw', 'wayoff:corner_ccw'))) ? {
+              return 3;
+            };
+            (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_north', 'wayoff:corner_inside_cw')) ? {
+              return 3;
+            };
+            (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_south', 'wayoff:corner_ccw')) ? {
+              return 3;
+            };
+
+            ((query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_west') && !query.block_neighbor_has_any_tag(t.north_x, 0, t.north_z, 'wayoff:corner_inside_ccw', 'wayoff:corner_cw'))) ? {
+              return 4;
+            };
+            (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_north', 'wayoff:corner_inside_ccw')) ? {
+              return 4;
+            };
+            (query.block_neighbor_has_all_tags(t.north_x, 0, t.north_z, 'wayoff:upward_south', 'wayoff:corner_cw')) ? {
+              return 4;
+            };
+            return t.res;
+          };
+          (t.facing == 2) ? {
+            t.res = 0;
+            (query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:upward_north') && !query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:corner_ccw')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_east', 'wayoff:corner_ccw') || query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_west', 'wayoff:corner_inside_cw')) ? {
+              return 1;
+            };
+
+            (query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:upward_south') && !query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:corner_cw')) ? {
+              return 2;
+            };
+            (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_east', 'wayoff:corner_cw') || query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_west', 'wayoff:corner_inside_ccw')) ? {
+              return 2;
+            };
+
+            ((query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_south') && !query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:corner_inside_ccw', 'wayoff:corner_cw'))) ? {
+              return 3;
+            };
+            (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_east', 'wayoff:corner_inside_cw')) ? {
+              return 3;
+            };
+            (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_west', 'wayoff:corner_ccw')) ? {
+              return 3;
+            };
+                  
+            ((query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_north') && !query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:corner_inside_cw', 'wayoff:corner_ccw'))) ? {
+              return 4;
+            };
+            (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_east', 'wayoff:corner_inside_ccw')) ? {
+              return 4;
+            };
+            (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_west', 'wayoff:corner_cw')) ? {
+              return 4;
+            };
+            return t.res;
+          };
+          (t.facing == 3) ? {
+            t.res = 0;
+            (query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:upward_south') && !query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:corner_ccw')) ? {
+              return 1;
+            };
+            (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_west', 'wayoff:corner_ccw') || query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_east', 'wayoff:corner_inside_cw')) ? {
+              return 1;
+            };
+
+            (query.block_neighbor_has_any_tag(t.east_x, 0, t.east_z, 'wayoff:upward_north') && !query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:corner_cw')) ? {
+              return 2;
+            };
+            (query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_west', 'wayoff:corner_cw') || query.block_neighbor_has_all_tags(t.east_x, 0, t.east_z, 'wayoff:upward_east', 'wayoff:corner_inside_ccw')) ? {
+              return 2;
+            };
+
+            ((query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_north') && !query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:corner_inside_ccw', 'wayoff:corner_cw'))) ? {
+              return 3;
+            };
+            (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_west', 'wayoff:corner_inside_cw')) ? {
+              return 3;
+            };
+            (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_east', 'wayoff:corner_ccw')) ? {
+              return 3;
+            };
+                
+            ((query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_south') && !query.block_neighbor_has_any_tag(t.west_x, 0, t.west_z, 'wayoff:corner_inside_cw', 'wayoff:corner_ccw'))) ? {
+              return 4;
+            };
+            (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_west', 'wayoff:corner_inside_ccw')) ? {
+              return 4;
+            };
+            (query.block_neighbor_has_all_tags(t.west_x, 0, t.west_z, 'wayoff:upward_east', 'wayoff:corner_cw')) ? {
+              return 4;
+            };
+            return t.res;
+          };
+          return 0;"
+        }
+      }
+    },
+    "permutations": [
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 1 && query.block_property('wayoff:corner_type') == 4)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_top_inside_corner_flipped",
+          "minecraft:aim_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "minecraft:block_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "tag:wayoff:top": {},
+          "tag:wayoff:corner_inside_cw": {},
+          "tag:wayoff:inside_corner": {}
+        }
+      },
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 1 && query.block_property('wayoff:corner_type') == 3)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_top_inside_corner",
+          "minecraft:aim_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "minecraft:block_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "tag:wayoff:top": {},
+          "tag:wayoff:corner_inside_ccw": {},
+          "tag:wayoff:inside_corner": {}
+        }
+      },
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 0 && query.block_property('wayoff:corner_type') == 4)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_bottom_inside_corner_flipped",
+          "tag:wayoff:corner_inside_cw": {},
+          "tag:wayoff:inside_corner": {}
+        }
+      },
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 0 && query.block_property('wayoff:corner_type') == 3)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_bottom_inside_corner",
+          "tag:wayoff:corner_inside_ccw": {},
+          "tag:wayoff:inside_corner": {}
+        }
+      },
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 1 && query.block_property('wayoff:corner_type') == 2)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_top_corner_flipped",
+          "minecraft:aim_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "minecraft:block_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "tag:wayoff:top": {},
+          "tag:wayoff:corner_ccw": {},
+          "tag:wayoff:corner": {}
+        }
+      },
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 1 && query.block_property('wayoff:corner_type') == 1)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_top_corner",
+          "minecraft:aim_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "minecraft:block_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "tag:wayoff:top": {},
+          "tag:wayoff:corner_cw": {},
+          "tag:wayoff:corner": {}
+        }
+      },
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 0 && query.block_property('wayoff:corner_type') == 2)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_bottom_corner_flipped",
+          "tag:wayoff:corner_ccw": {},
+          "tag:wayoff:corner": {}
+        }
+      },
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 0 && query.block_property('wayoff:corner_type') == 1)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_bottom_corner",
+          "tag:wayoff:corner_cw": {},
+          "tag:wayoff:corner": {}
+        }
+      },
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 1 && query.block_property('wayoff:corner_type') == 0)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_top_corner",
+          "minecraft:aim_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "minecraft:block_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "tag:wayoff:top": {}
+        }
+      },
+      {
+        "condition": "(query.block_property('wayoff:block_position') == 1 && query.block_property('wayoff:corner_type') == 0)",
+        "components": {
+          "minecraft:geometry": "geometry.thatched_roof_top",
+          "minecraft:aim_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "minecraft:block_collision": {
+            "origin": [-8.0, 8, -8.0],
+            "size": [16.0, 8.0, 16.0]
+          },
+          "tag:wayoff:top": {}
+        }
+      },
+      {
+        "condition": "query.block_property('wayoff:facing') == 0",
+        "components": {
+          "minecraft:rotation": [
+            0,
+            180,
+            0
+          ],
+          "tag:wayoff:bottom": {},
+          "tag:wayoff:upward_north": {} // north
+        }
+      },
+      {
+        "condition": "query.block_property('wayoff:facing') == 1",
+        "components": {
+          "minecraft:rotation": [
+            0,
+            0,
+            0
+          ],
+          "tag:wayoff:bottom": {},
+          "tag:wayoff:upward_south": {} // south
+        }
+      },
+      {
+        "condition": "query.block_property('wayoff:facing') == 2",
+        "components": {
+          "minecraft:rotation": [
+            0,
+            270,
+            0
+          ],
+          "tag:wayoff:bottom": {},
+          "tag:wayoff:upward_west": {} // west
+        }
+      },
+      {
+        "condition": "query.block_property('wayoff:facing') == 3",
+        "components": {
+          "minecraft:rotation": [
+            0,
+            90,
+            0
+          ],
+          "tag:wayoff:bottom": {},
+          "tag:wayoff:upward_east": {} // east
+        }
+      }
+    ]
+  }
+}
